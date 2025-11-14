@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 論文閱讀助手 - Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #fafbfc;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        /* 側邊欄 */
+        .sidebar {
+            width: 280px;
+            background: #ffffff;
+            border-right: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo {
+            padding: 24px 24px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+        }
+        
+        .nav-item {
+            padding: 10px 20px;
+            margin: 2px 12px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-item:hover {
+            background: #f8fafc;
+            color: #0f172a;
+        }
+        
+        .nav-item.active {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Project 選擇器 */
+        .project-selector {
+            padding: 12px 24px 20px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .current-project {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .current-project:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+        
+        .project-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-shrink: 0;
+        }
+        
+        .project-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        
+        .dropdown-arrow {
+            font-size: 10px;
+            color: #94a3b8;
+        }
+        
+        .sidebar-divider {
+            height: 1px;
+            background: #f1f5f9;
+            margin: 12px 24px;
+        }
+        
+        /* Projects 頁面 */
+        .projects-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .projects-header h2 {
+            font-size: 20px;
+            color: #0f172a;
+            font-weight: 600;
+        }
+        
+        .new-project-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+        
+        .new-project-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        
+        .project-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+        
+        .project-card-header {
+            display: flex;
+            align-items: start;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .project-card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            flex-shrink: 0;
+        }
+        
+        .project-card-info {
+            flex: 1;
+        }
+        
+        .project-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        
+        .project-card-desc {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        
+        .project-stats {
+            display: flex;
+            gap: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .project-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .project-stat-icon {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        /* 新增 Project Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #0f172a;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+        
+        .btn-cancel {
+            padding: 10px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #64748b;
+            transition: all 0.15s;
+        }
+        
+        .btn-cancel:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        
+        .btn-create {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        
+        .btn-create:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 主要內容區 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #fafbfc;
+        }
+        
+        .header {
+            background: #ffffff;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+        }
+        
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        
+        /* 聊天介面 */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            max-width: 100%;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .message.user .avatar {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .message-content {
+            max-width: 65%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .chat-input-area {
+            padding: 20px;
+            border-top: 1px solid #f1f5f9;
+            background: #ffffff;
+        }
+        
+        .paper-context {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .paper-tag {
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-weight: 500;
+        }
+        
+        .paper-tag .remove {
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 14px;
+            transition: color 0.15s;
+        }
+        
+        .paper-tag .remove:hover {
+            color: #475569;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            background: #fafbfc;
+            transition: all 0.15s;
+            color: #1a1a1a;
+        }
+        
+        .chat-input:focus {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        
+        .send-button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        
+        .send-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 上傳區域 */
+        .upload-area {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 48px;
+            text-align: center;
+            border: 2px dashed #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .upload-area:hover {
+            border-color: #cbd5e1;
+            background: #fafbfc;
+        }
+        
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+        }
+        
+        .upload-text {
+            font-size: 16px;
+            color: #0f172a;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .upload-hint {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        
+        /* 論文列表 */
+        .papers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .paper-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .paper-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+        
+        .paper-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        .paper-meta {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .paper-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 500;
+            transition: all 0.15s;
+        }
+        
+        .btn-small:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        
+        /* 設定頁面 */
+        .settings-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .settings-section h2 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #0f172a;
+            font-weight: 600;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #334155;
+            font-size: 13px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fafbfc;
+            transition: all 0.15s;
+            color: #1a1a1a;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 13px;
+            min-height: 120px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            resize: vertical;
+            background: #fafbfc;
+            transition: all 0.15s;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            border: none;
+        }
+        
+        .slider-value {
+            min-width: 45px;
+            text-align: center;
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 14px;
+        }
+        
+        .save-button {
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.15s;
+        }
+        
+        .save-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 隱藏非活動頁面 */
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .upload-section {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .recent-uploads {
+            margin-top: 40px;
+        }
+        
+        .recent-uploads h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 側邊欄 -->
+        <div class="sidebar">
+            <div class="logo">ResearchHub</div>
+            
+            <!-- Project 選擇器 -->
+            <div class="project-selector">
+                <div class="current-project" id="current-project">
+                    <span class="project-icon"></span>
+                    <span class="project-name">Deep Learning Research</span>
+                    <span class="dropdown-arrow">▼</span>
+                </div>
+            </div>
+            
+            <div class="nav-item active" data-page="chat">
+                <span class="nav-icon">💬</span> Chat
+            </div>
+            <div class="nav-item" data-page="upload">
+                <span class="nav-icon">↑</span> Upload
+            </div>
+            <div class="nav-item" data-page="papers">
+                <span class="nav-icon">▢</span> Papers
+            </div>
+            <div class="nav-item" data-page="settings">
+                <span class="nav-icon">⚙</span> Settings
+            </div>
+            
+            <div class="sidebar-divider"></div>
+            
+            <div class="nav-item" data-page="projects">
+                <span class="nav-icon">⊞</span> Projects
+            </div>
+        </div>
+        
+        <!-- 主要內容 -->
+        <div class="main-content">
+            <div class="header">
+                <h1 id="page-title">Chat</h1>
+                <div style="display: flex; gap: 16px; align-items: center; color: #94a3b8;">
+                    <span style="cursor: pointer;">⚡</span>
+                    <span style="cursor: pointer;">◷</span>
+                    <span style="cursor: pointer;">●</span>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <!-- Projects 頁面 -->
+                <div class="page" id="projects">
+                    <div class="projects-header">
+                        <h2>所有 Projects</h2>
+                        <button class="new-project-btn" id="new-project-btn">
+                            <span>+</span>
+                            <span>新增 Project</span>
+                        </button>
+                    </div>
+                    
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-card-header">
+                                <div class="project-card-icon">🧠</div>
+                                <div class="project-card-info">
+                                    <div class="project-card-title">Deep Learning Research</div>
+                                    <div class="project-card-desc">研究深度學習相關論文</div>
+                                </div>
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📄</span>
+                                    <span>4 篇論文</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">💬</span>
+                                    <span>23 次對話</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📅</span>
+                                    <span>2 天前</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-card-header">
+                                <div class="project-card-icon">🤖</div>
+                                <div class="project-card-info">
+                                    <div class="project-card-title">NLP & Transformers</div>
+                                    <div class="project-card-desc">自然語言處理與 Transformer 架構</div>
+                                </div>
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📄</span>
+                                    <span>7 篇論文</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">💬</span>
+                                    <span>45 次對話</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📅</span>
+                                    <span>5 天前</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-card-header">
+                                <div class="project-card-icon">👁️</div>
+                                <div class="project-card-info">
+                                    <div class="project-card-title">Computer Vision</div>
+                                    <div class="project-card-desc">影像辨識與物件偵測研究</div>
+                                </div>
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📄</span>
+                                    <span>5 篇論文</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">💬</span>
+                                    <span>12 次對話</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📅</span>
+                                    <span>1 週前</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-card-header">
+                                <div class="project-card-icon">🔬</div>
+                                <div class="project-card-info">
+                                    <div class="project-card-title">Reinforcement Learning</div>
+                                    <div class="project-card-desc">強化學習演算法與應用</div>
+                                </div>
+                            </div>
+                            <div class="project-stats">
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📄</span>
+                                    <span>3 篇論文</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">💬</span>
+                                    <span>8 次對話</span>
+                                </div>
+                                <div class="project-stat">
+                                    <span class="project-stat-icon">📅</span>
+                                    <span>2 週前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 聊天頁面 -->
+                <div class="page active" id="chat">
+                    <div class="chat-container">
+                        <div class="chat-messages">
+                            <div class="message">
+                                <div class="avatar">AI</div>
+                                <div class="message-content">
+                                    Hello! I'm your AI research assistant. Upload papers and I'll help you understand and analyze them.
+                                </div>
+                            </div>
+                            <div class="message user">
+                                <div class="avatar">YOU</div>
+                                <div class="message-content">
+                                    Can you explain the main contributions of this paper?
+                                </div>
+                            </div>
+                            <div class="message">
+                                <div class="avatar">AI</div>
+                                <div class="message-content">
+                                    Based on "Attention is All You Need", the main contributions include:<br><br>
+                                    1. Introduced the Transformer architecture, entirely based on attention mechanisms<br>
+                                    2. Eliminates recurrent neural networks and convolutional layers<br>
+                                    3. Enables parallel processing, significantly improving training efficiency<br>
+                                    4. Achieved SOTA performance on machine translation tasks
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input-area">
+                            <div class="paper-context">
+                                <div class="paper-tag">
+                                    Attention is All You Need
+                                    <span class="remove">×</span>
+                                </div>
+                                <div class="paper-tag">
+                                    BERT: Pre-training...
+                                    <span class="remove">×</span>
+                                </div>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="text" class="chat-input" placeholder="Ask a question...">
+                                <button class="send-button">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 上傳頁面 -->
+                <div class="page" id="upload">
+                    <div class="upload-section">
+                        <div class="upload-area">
+                            <div class="upload-icon">↑</div>
+                            <div class="upload-text">Drop PDF files here or click to browse</div>
+                            <div class="upload-hint">Supports PDF format, max file size 50MB</div>
+                        </div>
+                        
+                        <div class="recent-uploads">
+                            <h2>Recent Uploads</h2>
+                            <div class="papers-grid">
+                                <div class="paper-card">
+                                    <div class="paper-title">Processing...</div>
+                                    <div class="paper-meta">transformer_paper.pdf</div>
+                                    <div class="paper-meta">2 minutes ago</div>
+                                    <div style="margin-top: 12px; height: 4px; background: #f1f5f9; border-radius: 2px;">
+                                        <div style="width: 65%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 2px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 論文管理頁面 -->
+                <div class="page" id="papers">
+                    <div class="papers-grid">
+                        <div class="paper-card">
+                            <div class="paper-title">Attention is All You Need</div>
+                            <div class="paper-meta">Vaswani et al.</div>
+                            <div class="paper-meta">2017-06-12</div>
+                            <div class="paper-meta">15 pages · Indexed</div>
+                            <div class="paper-actions">
+                                <button class="btn-small">Chat</button>
+                                <button class="btn-small">View</button>
+                                <button class="btn-small">Delete</button>
+                            </div>
+                        </div>
+                        
+                        <div class="paper-card">
+                            <div class="paper-title">BERT: Pre-training of Deep Bidirectional Transformers</div>
+                            <div class="paper-meta">Devlin et al.</div>
+                            <div class="paper-meta">2018-10-11</div>
+                            <div class="paper-meta">16 pages · Indexed</div>
+                            <div class="paper-actions">
+                                <button class="btn-small">Chat</button>
+                                <button class="btn-small">View</button>
+                                <button class="btn-small">Delete</button>
+                            </div>
+                        </div>
+                        
+                        <div class="paper-card">
+                            <div class="paper-title">GPT-4 Technical Report</div>
+                            <div class="paper-meta">OpenAI</div>
+                            <div class="paper-meta">2023-03-15</div>
+                            <div class="paper-meta">100 pages · Indexed</div>
+                            <div class="paper-actions">
+                                <button class="btn-small">Chat</button>
+                                <button class="btn-small">View</button>
+                                <button class="btn-small">Delete</button>
+                            </div>
+                        </div>
+                        
+                        <div class="paper-card">
+                            <div class="paper-title">ResNet: Deep Residual Learning</div>
+                            <div class="paper-meta">He et al.</div>
+                            <div class="paper-meta">2015-12-10</div>
+                            <div class="paper-meta">12 pages · Indexed</div>
+                            <div class="paper-actions">
+                                <button class="btn-small">Chat</button>
+                                <button class="btn-small">View</button>
+                                <button class="btn-small">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 設定頁面 -->
+                <div class="page" id="settings">
+                    <div class="settings-section">
+                        <h2>System Prompt</h2>
+                        <div class="form-group">
+                            <label class="form-label">Custom System Prompt</label>
+                            <textarea class="form-textarea" placeholder="Enter custom system prompt...">You are a professional AI research assistant, skilled at understanding and analyzing academic papers. Please answer user questions in a clear and concise manner, citing specific content from papers when necessary.</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2>Model Parameters</h2>
+                        <div class="form-group">
+                            <label class="form-label">Temperature</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" min="0" max="20" value="7" id="temp-slider">
+                                <span class="slider-value" id="temp-value">0.7</span>
+                            </div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-top: 6px;">
+                                Lower values produce more deterministic outputs, higher values are more creative
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Top P</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" min="0" max="10" value="9" id="topp-slider">
+                                <span class="slider-value" id="topp-value">0.9</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Max Tokens</label>
+                            <input type="number" class="form-input" value="2048" placeholder="2048">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Response Language</label>
+                            <select class="form-input">
+                                <option>English</option>
+                                <option>繁體中文</option>
+                                <option>Auto-detect</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <h2>RAG Configuration</h2>
+                        <div class="form-group">
+                            <label class="form-label">Number of Retrieved Documents</label>
+                            <input type="number" class="form-input" value="5" placeholder="5">
+                            <div style="font-size: 12px; color: #94a3b8; margin-top: 6px;">
+                                Number of relevant passages retrieved from papers per query
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Similarity Threshold</label>
+                            <div class="slider-container">
+                                <input type="range" class="slider" min="0" max="10" value="7" id="sim-slider">
+                                <span class="slider-value" id="sim-value">0.7</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="save-button">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新增 Project Modal -->
+    <div class="modal" id="new-project-modal">
+        <div class="modal-content">
+            <div class="modal-header">新增 Project</div>
+            <div class="form-group">
+                <label class="form-label">Project 名稱</label>
+                <input type="text" class="form-input" placeholder="例如：Deep Learning Research">
+            </div>
+            <div class="form-group">
+                <label class="form-label">描述（選填）</label>
+                <textarea class="form-input" style="min-height: 80px;" placeholder="簡單描述這個 project 的用途..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">圖示</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-small" style="font-size: 20px;">🧠</button>
+                    <button class="btn-small" style="font-size: 20px;">🤖</button>
+                    <button class="btn-small" style="font-size: 20px;">👁️</button>
+                    <button class="btn-small" style="font-size: 20px;">🔬</button>
+                    <button class="btn-small" style="font-size: 20px;">📚</button>
+                    <button class="btn-small" style="font-size: 20px;">💡</button>
+                    <button class="btn-small" style="font-size: 20px;">🎯</button>
+                    <button class="btn-small" style="font-size: 20px;">⚡</button>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancel-modal">取消</button>
+                <button class="btn-create" id="create-project">建立</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 頁面導航
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
+        const pageTitle = document.getElementById('page-title');
+        
+        const pageTitles = {
+            'chat': '聊天對話',
+            'upload': '上傳論文',
+            'papers': '論文管理',
+            'settings': '模型設定',
+            'projects': '所有 Projects'
+        };
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetPage = item.getAttribute('data-page');
+                
+                // 更新導航項目狀態
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                // 更新頁面顯示
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(targetPage).classList.add('active');
+                
+                // 更新標題
+                pageTitle.textContent = pageTitles[targetPage];
+            });
+        });
+        
+        // 滑桿數值更新
+        const tempSlider = document.getElementById('temp-slider');
+        const tempValue = document.getElementById('temp-value');
+        tempSlider.addEventListener('input', (e) => {
+            tempValue.textContent = (e.target.value / 10).toFixed(1);
+        });
+        
+        const toppSlider = document.getElementById('topp-slider');
+        const toppValue = document.getElementById('topp-value');
+        toppSlider.addEventListener('input', (e) => {
+            toppValue.textContent = (e.target.value / 10).toFixed(1);
+        });
+        
+        const simSlider = document.getElementById('sim-slider');
+        const simValue = document.getElementById('sim-value');
+        simSlider.addEventListener('input', (e) => {
+            simValue.textContent = (e.target.value / 10).toFixed(1);
+        });
+        
+        // 按鈕互動效果
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('send-button')) {
+                alert('發送訊息功能（Wireframe 示意）');
+            }
+            if (e.target.classList.contains('save-button')) {
+                alert('設定已儲存！（Wireframe 示意）');
+            }
+            if (e.target.textContent.includes('💬 對話')) {
+                // 切換到聊天頁面
+                document.querySelector('[data-page="chat"]').click();
+                alert('開始與此論文對話（Wireframe 示意）');
+            }
+        });
+        
+        // Modal 控制
+        const newProjectBtn = document.getElementById('new-project-btn');
+        const modal = document.getElementById('new-project-modal');
+        const cancelModal = document.getElementById('cancel-modal');
+        const createProject = document.getElementById('create-project');
+        
+        if (newProjectBtn) {
+            newProjectBtn.addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+        }
+        
+        if (cancelModal) {
+            cancelModal.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+        }
+        
+        if (createProject) {
+            createProject.addEventListener('click', () => {
+                alert('Project 已建立！（Wireframe 示意）');
+                modal.classList.remove('active');
+            });
+        }
+        
+        // 點擊 modal 背景關閉
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+        
+        // Project 卡片點擊
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const projectName = card.querySelector('.project-card-title').textContent;
+                document.querySelector('.project-name').textContent = projectName;
+                document.querySelector('[data-page="chat"]').click();
+                alert(`已切換到 "${projectName}" project（Wireframe 示意）`);
+            });
+        });
+        
+        // Project 選擇器點擊
+        const currentProject = document.getElementById('current-project');
+        if (currentProject) {
+            currentProject.addEventListener('click', () => {
+                alert('開啟 Project 切換選單（Wireframe 示意）');
+            });
+        }
+        
+        // 上傳區域互動
+        const uploadArea = document.querySelector('.upload-area');
+        if (uploadArea) {
+            uploadArea.addEventListener('click', () => {
+                alert('選擇 PDF 檔案上傳（Wireframe 示意）');
+            });
+        }
+    </script>
+</body>
+</html>
