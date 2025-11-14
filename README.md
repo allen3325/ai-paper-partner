@@ -1,4 +1,5 @@
-# paper-partner
+# ai-paper-partner
+
 
 ---
 
