@@ -519,7 +519,7 @@
 - [x] React app 可以正常啟動
 - [x] TypeScript 編譯正常
 - [x] ESLint 和 Prettier 正常運作
-- [x] 可以讀取環境變數
+- [x] 可以讀取環境變數 (改改改)
 
 **Dependencies:** None
 
