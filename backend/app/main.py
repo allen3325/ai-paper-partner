@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI ,Depends,HTTPException,Path
+from uuid import UUID
 import logging
 from app.config import PORT
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models.project import Project
 
 app = FastAPI()
 
@@ -26,4 +30,25 @@ async def root():
 def health():
     logger.info("health check")
     return JSONResponse(status_code=200,content={"status":"ok"})
+
+@app.get("/projects/{project_id}")
+def get_project(
+    project_id: UUID = Path(..., description="Project UUID"),  # ✅ FastAPI 自動驗證
+    db: Session = Depends(get_db)
+):
+    project = db.query(Project).filter(
+        Project.project_id == project_id
+    ).first()
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    return {
+        "project_id": str(project.project_id),
+        "name": project.name,
+        "description": project.description,
+        "tags": project.project_tags,
+        "objectives": project.objectives
+    }
+
 
