@@ -1,2 +1,1 @@
-// Export all services from this file
-export {};
+export { chatService, projectService, paperService, settingsService } from './api';
