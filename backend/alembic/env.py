@@ -5,7 +5,11 @@ from sqlalchemy import pool
 
 from alembic import context
 from app.database import Base,DATABASE_URL
-from app.models.project import Project  # Import your models here
+# Import your models here
+from app.models.project import Project
+from app.models.paper import Paper
+from app.models.chunk import Chunk
+from app.models.conversation import Conversation
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
